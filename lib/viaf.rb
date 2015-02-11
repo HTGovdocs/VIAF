@@ -4,7 +4,7 @@ require 'normalize_corporate'
 
 ##
 # Basic handling of VIAF corporate names. 
-module Viaf
+module VIAF
   
   DB = HTPH::Hathidb::Db.new();
   DB_CONN = DB.get_conn();
@@ -12,18 +12,18 @@ module Viaf
   #1. select headings
   VH_SQL = "SELECT viaf_id, heading FROM viaf_headings 
             WHERE heading_normalized = ?" 
-  SELECT_HEADINGS = DB_CONN.prepare(vh_sql)
+  SELECT_HEADINGS = DB_CONN.prepare(VH_SQL)
 
   #2. select viaf corporates
   VC_SQL = "SELECT vc.viaf_id, raw_corporate, heading FROM viaf_corporates vc 
             LEFT JOIN viaf_headings vh ON vh.viaf_id = vc.viaf_id 
             WHERE normalized_corporate = ?"
-  SELECT_CORPORATES = DB_CONN.prepare(vc_sql) 
+  SELECT_CORPORATES = DB_CONN.prepare(VC_SQL) 
   
   ##
   # Takes an array of subfields: [<a_sub>, <b_sub>, <b_sub>, ...]. 
   # Returns viaf ids and main entry text
-  def get_viaf( field )
+  def self::get_viaf( field )
     viafs = {}
     raw_corporate = field.join(' ')
     nsubs  = field.map{ |sf| normalize_corporate(sf) }
@@ -36,7 +36,7 @@ module Viaf
       else
         viafs[row[0]] = [row[1]]
       end
-      viafs[:match_type] = 'main heading'
+      #viafs[:match_type] = 'main heading'
     end
     if viafs.count > 0 
       return viafs #good enough
@@ -49,7 +49,7 @@ module Viaf
       else
         viafs[row[0]] = [row[2]]
       end
-      viafs[:match_type] = "corporate (110)"
+      #viafs[:match_type] = "corporate (110)"
     end
     if viafs.count > 0
       return viafs  #good enough

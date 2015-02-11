@@ -5,7 +5,7 @@ require 'viaf/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "viaf"
-  spec.version       = Viaf::VERSION
+  spec.version       = VIAF::VERSION
   spec.authors       = ["Josh Steverman"]
   spec.email         = ["jstever@umich.edu"]
   spec.summary       = %q{Extraction of VIAF corporate names. Comparison with Govdocs. Associated scripts.}

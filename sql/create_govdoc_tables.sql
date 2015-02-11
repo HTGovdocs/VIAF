@@ -1,16 +1,22 @@
 use ht_repository;
-
+DROP TABLE IF EXISTS gd_viaf_ids;
 DROP TABLE IF EXISTS gd_corporates;
-DROP TABLE IF EXISTS gd_subs;
+DROP TABLE IF EXISTS gd_subfields;
+
 /* alternatively, delete from gd_subs where field = '110'; */
+CREATE TABLE gd_viaf_ids(
+  id INT NOT NULL auto_increment,
+  gd_corporate_id INT NOT NULL,
+  viaf_id INT NOT NULL,
+  primary key(id)
+);
 
 CREATE TABLE gd_corporates(
   id INT NOT NULL auto_increment,
   /* still have to figure out record identification */
   file_name VARCHAR(255) NOT NULL,
-  record_id VARCHAR(255) NOT NULL,
+  control_number VARCHAR(255) NOT NULL,
   date_extracted DATE NOT NULL,
-  viaf_id INT NOT NULL DEFAULT 0,
   indicator CHAR(1) NULL,
   raw_corporate TEXT NOT NULL,
   normalized_corporate TEXT NOT NULL,
@@ -20,8 +26,7 @@ CREATE TABLE gd_corporates(
 /* Not currently used but good to have */
 CREATE TABLE gd_subfields(
   id INT NOT NULL auto_increment,
-  gd_field_id INT NOT NULL,
-  viaf_id INT NOT NULL DEFAULT 0,
+  gd_corporate_id INT NOT NULL,
   field VARCHAR(255) NOT NULL DEFAULT "110", 
   code CHAR(1) NULL,
   subfield TEXT NOT NULL,

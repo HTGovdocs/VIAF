@@ -1,31 +1,35 @@
-# Viaf
+# VIAF
 
-TODO: Write a gem description
+VIAF module facilitates VIAF lookups. 
+Associated scripts allow extraction of 110s from VIAF cluster file and .ndj source files.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'viaf'
+gem 'viaf', :git => 'https://github.com/HTGovdocs/viaf.git';  
 ```
 
 And then execute:
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install viaf
+    $ bundle install --path .bundle
 
 ## Usage
 
-TODO: Write usage instructions here
+./startup.sh to set up the environment.
 
-## Contributing
+Create tables with sql files found in 'sql/'.
 
-1. Fork it ( https://github.com/[my-github-username]/viaf/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+Load VIAF 110s with:
+    $ bundle exec ruby scripts/extract_viaf_110s.rb
+
+Index the VIAFs with 'sql/index_viaf_tables.sql'
+
+Load GovDoc 110s and perform VIAF lookups with:
+    $ bundle exec ruby scripts/extract_govdoc_110s.rb <source>.ndj
+
+Index GovDoc 110s with 'sql/index_govdoc_tables.sql'
+
+The VIAF module has one method, "get_viafs( field )". Expects an array of corporate author (110) subfields. Returns hash of VIAF ID => [VIAF Headings]
+
