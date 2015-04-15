@@ -11,9 +11,9 @@ db_conn = db.get_conn()
 gv_sql = "INSERT INTO gd_viaf_ids (gd_corporate_id, viaf_id)
           VALUES(?,?)"
 gv_insert = db_conn.prepare(gv_sql)
-gc_sql = "INSERT INTO gd_corporates (file_name, control_number, date_extracted, 
+gc_sql = "INSERT INTO gd_corporates (file_name, control_number, field, date_extracted, 
             indicator, raw_corporate, normalized_corporate)
-          VALUES(?, ?, ?, ?, ?, ? )"
+          VALUES(?, ?, ?, ?, ?, ?, ? )"
 gc_insert = db_conn.prepare(gc_sql)
 gs_sql = "INSERT INTO gd_subfields (gd_corporate_id, field, code, subfield, 
             subfield_normalized, position, subfield_count) 
@@ -44,6 +44,7 @@ gd_in.each do | line |
   corp_fields.each do | field_name, corp_field | 
     indicator = corp_field["ind1"].chomp
     subfields = corp_field["subfields"]
+    field = "110"
     sub_count = subfields.count 
 
     normalized_subfields = []
@@ -56,7 +57,7 @@ gd_in.each do | line |
     raw_corporate = raw_subs.join(' ').chomp 
     normalized_corporate = normalize_corporate(normalized_subfields.join(' '), false)
     #insert into gc_corporates
-    gc_insert.execute(fin, control_number, date_extracted, indicator, 
+    gc_insert.execute(fin, control_number, field, date_extracted, indicator, 
                       raw_corporate, normalized_corporate)
     gd_corporate_id = 0
     last_id_q.query() { |row| gd_corporate_id = row[:id] } 
@@ -70,7 +71,6 @@ gd_in.each do | line |
       gs_insert.execute(gd_corporate_id, field, code, subfield, 
                         subfield_normalized, position, sub_count)
     end
-        
 
     viafs = VIAF::get_viaf(raw_subs)
     gc_id = 0

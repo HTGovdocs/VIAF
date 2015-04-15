@@ -14,8 +14,10 @@ CREATE TABLE gd_viaf_ids(
 CREATE TABLE gd_corporates(
   id INT NOT NULL auto_increment,
   /* still have to figure out record identification */
+  source VARCHAR(255) NOT NULL,
   file_name VARCHAR(255) NOT NULL,
   control_number VARCHAR(255) NOT NULL,
+  field VARCHAR(255) NOT NULL,
   date_extracted DATE NOT NULL,
   indicator CHAR(1) NULL,
   raw_corporate TEXT NOT NULL,
