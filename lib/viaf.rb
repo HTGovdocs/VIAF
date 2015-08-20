@@ -4,7 +4,7 @@ require 'normalize_corporate'
 
 ##
 # Basic handling of VIAF corporate names. 
-class VIAF
+class Viaf
  
   def initialize() 
     @db = HTPH::Hathidb::Db.new();
