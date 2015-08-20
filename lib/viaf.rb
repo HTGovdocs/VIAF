@@ -4,33 +4,35 @@ require 'normalize_corporate'
 
 ##
 # Basic handling of VIAF corporate names. 
-module VIAF
+class VIAF
+ 
+  def initialize() 
+    @db = HTPH::Hathidb::Db.new();
+    @db_conn = @db.get_conn();
   
-  DB = HTPH::Hathidb::Db.new();
-  DB_CONN = DB.get_conn();
-  
-  #1. select headings
-  VH_SQL = "SELECT viaf_id, heading FROM viaf_headings 
-            WHERE heading_normalized = ?" 
-  SELECT_HEADINGS = DB_CONN.prepare(VH_SQL)
+    #1. select headings
+    @vh_sql = "SELECT viaf_id, heading FROM viaf_headings 
+              WHERE heading_normalized = ?" 
+    @select_headings = @db_conn.prepare(@vh_sql)
 
-  #2. select viaf corporates
-  VC_SQL = "SELECT vc.viaf_id, raw_corporate, heading FROM viaf_corporates vc 
-            LEFT JOIN viaf_headings vh ON vh.viaf_id = vc.viaf_id 
-            WHERE normalized_corporate = ?"
-  SELECT_CORPORATES = DB_CONN.prepare(VC_SQL) 
+    #2. select viaf corporates
+    @vc_sql = "SELECT vc.viaf_id, raw_corporate, heading FROM viaf_corporates vc 
+              LEFT JOIN viaf_headings vh ON vh.viaf_id = vc.viaf_id 
+              WHERE normalized_corporate = ?"
+    @select_corporates = @db_conn.prepare(@vc_sql) 
+  end
   
   ##
   # Takes an array of subfields: [<a_sub>, <b_sub>, <b_sub>, ...]. 
   # Returns viaf ids and main entry text
-  def self::get_viaf( field )
+  def get_viaf( field )
     viafs = {}
     raw_corporate = field.join(' ')
     nsubs  = field.map{ |sf| normalize_corporate(sf) }
     ncorp = normalize_corporate(nsubs.join(' '), false)
     
     #1. check main headings for exact matches
-    SELECT_HEADINGS.enumerate(ncorp) do | row |
+    @select_headings.enumerate(ncorp) do | row |
       if viafs.has_key? row[0] 
         viafs[row[0]].push row[1] #heading
       else
@@ -43,7 +45,7 @@ module VIAF
     end
 
     #2. search the corporates (110s)
-    SELECT_CORPORATES.enumerate(ncorp) do | row |
+    @select_corporates.enumerate(ncorp) do | row |
       if viafs.has_key? row[0]
         viafs[row[0]].push row[2] #heading
       else
