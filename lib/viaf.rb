@@ -17,7 +17,7 @@ class Viaf
                                   :username => ENV['db_user'],
                                   :password => ENV['db_pw'],
                                   :database => ENV['db_name'],
-                                  :reconnect => True
+                                  :reconnect => true
                                  )
     #1. select headings
     #   "SELECT viaf_id, heading FROM viaf_headings WHERE heading_normalized = " 
