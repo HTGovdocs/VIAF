@@ -16,7 +16,8 @@ class Viaf
     @db_conn = Mysql2::Client.new(:host => ENV['db_host'], 
                                   :username => ENV['db_user'],
                                   :password => ENV['db_pw'],
-                                  :database => ENV['db_name']
+                                  :database => ENV['db_name'],
+                                  :reconnect => True
                                  )
     #1. select headings
     #   "SELECT viaf_id, heading FROM viaf_headings WHERE heading_normalized = " 
