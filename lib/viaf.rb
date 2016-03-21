@@ -37,7 +37,12 @@ class Viaf
     @nsubs  = field.map{ |sf| normalize_corporate(sf) }
     @ncorp = normalize_corporate(@nsubs.join(' '), false)
     #1. check main headings for exact matches
-    ncorp_escaped = @db_conn.escape(@ncorp.encode("ISO-8859-1"))
+    begin
+      ncorp_escaped = @db_conn.escape(@ncorp.encode("ISO-8859-1"))
+    rescue
+      #text encoding problems, abandon all hope
+      return @viafs
+    end
     @results = @db_conn.query("SELECT viaf_id, heading FROM viaf_headings 
                           WHERE heading_normalized = '#{ncorp_escaped}'") 
     @results.each do | row |
