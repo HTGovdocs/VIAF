@@ -2,6 +2,7 @@ require "viaf/version"
 require 'mysql2'
 require 'normalize_corporate'
 require 'dotenv'
+require 'pp'
 
 Dotenv.load()
 ##
@@ -41,7 +42,9 @@ class Viaf
       ncorp_escaped = @db_conn.escape(@ncorp.encode("ISO-8859-1"))
       @results = @db_conn.query("SELECT viaf_id, heading FROM viaf_headings 
                           WHERE heading_normalized = '#{ncorp_escaped}'") 
-    rescue
+    rescue Exception => e
+      PP.pp e
+      STDOUT.flush
       #text encoding problems, abandon all hope
       return @viafs
     end
