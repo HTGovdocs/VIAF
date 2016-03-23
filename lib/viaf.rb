@@ -44,7 +44,7 @@ class Viaf
       :undef   => :replace,
       :replace => '',
     }
-    ncorp_escaped = @db_conn.escape(@ncorp.encode("ISO-8859-1", encoding_options))
+    ncorp_escaped = @db_conn.escape(@ncorp.encode(Encoding.find('ASCII'), encoding_options))
     @results = @db_conn.query("SELECT viaf_id, heading FROM viaf_headings 
                                 WHERE heading_normalized = '#{ncorp_escaped}'") 
     @results.each do | row |
