@@ -1,6 +1,6 @@
 require "viaf/version"
 require 'mysql2'
-require 'normalize_corporate'
+require 'normalize'
 require 'dotenv'
 require 'pp'
 
@@ -35,8 +35,8 @@ class Viaf
   def get_viaf( field )
     @viafs = {}
     raw_corporate = field.join(' ')
-    @nsubs  = field.map{ |sf| normalize_corporate(sf) }
-    @ncorp = normalize_corporate(@nsubs.join(' '), false)
+    @nsubs  = field.map{ |sf| Normalize.corporate(sf) }
+    @ncorp = Normalize.corporate(@nsubs.join(' '), false)
     #1. check main headings for exact matches
     #stupid encoding
     encoding_options = {
